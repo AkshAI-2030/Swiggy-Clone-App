@@ -8,6 +8,8 @@ import { useState, useEffect, useCallback } from "react";
 import Cookies from "js-cookie";
 import { CgSortAz, CgSortZa } from "react-icons/cg";
 
+const backendURL = process.env.REACT_APP_API_URL;
+
 const Body = () => {
   const [listOfRestaurants, setListOfRestaurants] = useState([]);
   const [filteredRestaurants, setFilteredRestaurants] = useState([]);
@@ -24,7 +26,7 @@ const Body = () => {
   const fetchData = async () => {
     try {
       const token = Cookies.get("token");
-      const response = await fetch("http://localhost:3000/api/v1/restaurants", {
+      const response = await fetch(`${backendURL}/api/v1/restaurants`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

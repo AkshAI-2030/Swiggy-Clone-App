@@ -3,6 +3,8 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import SavedShimmer from "../ShimmerUI/SavedShimmer";
 
+const backendURL = process.env.REACT_APP_API_URL;
+
 const SavedItems = () => {
   const [savedItems, setSavedItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,14 +22,11 @@ const SavedItems = () => {
         const decoded = jwtDecode(token);
         const userId = decoded.id;
 
-        const res = await fetch(
-          `http://localhost:3000/api/v1/cart/user/${userId}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const res = await fetch(`${backendURL}/api/v1/cart/user/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
         const data = await res.json();
         if (res.ok && data.items) {

@@ -20,7 +20,7 @@ app.use("/api/v1", require("./routes/authRoutes"));
 app.use("/api/v1", require("./routes/cartRoutes"));
 app.use("/api/v1", require("./routes/githubRoutes"));
 app.use("/api/v1", require("./routes/restaurantRoutes")); // Using the restaurantRoutes
-
-app.listen(3000, () => {
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
   console.log("Server started on port 3000");
 });

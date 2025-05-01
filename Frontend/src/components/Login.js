@@ -5,6 +5,8 @@ import Cookies from "js-cookie";
 
 import UserContext from "../utils/userContext";
 
+const backendURL = process.env.REACT_APP_API_URL;
+
 const Login = () => {
   const navigate = useNavigate();
   const token = Cookies.get("token");
@@ -61,7 +63,7 @@ const Login = () => {
     e.preventDefault();
     if (!validate()) return;
 
-    const url = "http://localhost:3000/api/v1/login";
+    const url = `${backendURL}/api/v1/login`;
     const payload = { email: formData.email, password: formData.password };
 
     try {

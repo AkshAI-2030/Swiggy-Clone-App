@@ -4,6 +4,8 @@ import { clearCart } from "../utils/cartSlice";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
+const backendURL = process.env.REACT_APP_API_URL;
+
 const Cart = () => {
   const cartItems = useSelector((store) => store.cart.items);
   const dispatch = useDispatch();
@@ -27,7 +29,7 @@ const Cart = () => {
         quantity,
       }));
 
-      const response = await fetch("http://localhost:3000/api/v1/cart/save", {
+      const response = await fetch(`${backendURL}/api/v1/cart/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

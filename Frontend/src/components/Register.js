@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
 
+const backendURL = process.env.REACT_APP_API_URL;
+
 const Register = () => {
   const navigate = useNavigate();
   const token = Cookies.get("token");
@@ -46,7 +48,7 @@ const Register = () => {
     if (!validate()) return;
 
     try {
-      const res = await fetch("http://localhost:3000/api/v1/register", {
+      const res = await fetch(`${backendURL}/api/v1/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import ShimmerAbout from "../ShimmerUI/ShimmerAbout";
+
+const backendURL = process.env.REACT_APP_API_URL;
+
 const About = () => {
   const [userData, setUserData] = useState(null);
   const [topRepos, setTopRepos] = useState([]);
@@ -7,11 +10,11 @@ const About = () => {
   useEffect(() => {
     const fetchGitHubData = async () => {
       try {
-        const profileRes = await fetch(`http://localhost:3000/api/v1/profile`);
+        const profileRes = await fetch(`${backendURL}/api/v1/profile`);
         const profileData = await profileRes.json();
         setUserData(profileData);
 
-        const reposRes = await fetch(`http://localhost:3000/api/v1/repos`);
+        const reposRes = await fetch(`${backendURL}/api/v1/repos`);
         const reposData = await reposRes.json();
 
         const sortedRepos = reposData.slice(11, 17);
