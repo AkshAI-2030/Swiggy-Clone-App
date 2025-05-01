@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 
-import UserContext from "../utils/userContext";
+import UserContext from "../utils/UserContext";
 
 const backendURL = process.env.REACT_APP_API_URL;
 

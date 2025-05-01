@@ -11,7 +11,7 @@ import Cart from "./components/Cart";
 import About from "./components/About";
 import Login from "./components/Login";
 import Register from "./components/Register";
-import UserContext from "./utils/userContext";
+import UserContext from "./utils/UserContext";
 import appStore from "./utils/appStore";
 import "../index.css";
 import Cookies from "js-cookie";

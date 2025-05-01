@@ -6,7 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearCart, setCart } from "../utils/cartSlice";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
-import UserContext from "../utils/userContext";
+import UserContext from "../utils/UserContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
