@@ -17,6 +17,10 @@ import "../index.css";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify"; // Import toast here
+
 // Layouts
 import MainLayout from "./components/MainLayout";
 import AuthLayout from "./components/AuthLayout";
@@ -42,6 +46,7 @@ const App = () => {
 
   return (
     <Provider store={appStore}>
+      <ToastContainer position="top-center" autoClose={1000} />
       <UserContext.Provider
         value={{ loggedInUser: username, setLoggedInUser: setUsername }}
       >

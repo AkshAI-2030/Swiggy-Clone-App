@@ -2,22 +2,27 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate, Link } from "react-router";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
-
 import UserContext from "../utils/UserContext";
-
+import { Eye, EyeOff } from "lucide-react";
+import { toast } from "react-toastify"; // Import toast here
+import "react-toastify/dist/ReactToastify.css"; // Import toast styles
+import { ToastContainer } from "react-toastify"; // Import ToastContainer
 const backendURL = process.env.REACT_APP_API_URL;
 
 const Login = () => {
   const navigate = useNavigate();
   const token = Cookies.get("token");
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [showPassword, setShowPassword] = useState(false);
+  const [buttonClicked, setButtonClicked] = useState(false);
 
   const { loggedInUser: username, setLoggedInUser } = useContext(UserContext);
+
   useEffect(() => {
     if (token) {
       navigate("/");
     } else {
-      setCheckingAuth(false); // done checking
+      setCheckingAuth(false);
     }
   }, []);
 
@@ -25,6 +30,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+
   const [errors, setErrors] = useState({});
   const [loginError, setLoginError] = useState({
     showSubmitError: false,
@@ -46,10 +52,10 @@ const Login = () => {
 
   const onSubmitSuccess = (token) => {
     Cookies.set("token", token, { expires: 1 / 24 });
-    alert("Login Success ✅");
+    toast.success("Login Success ✅");
     const decoded = jwtDecode(token);
     setLoggedInUser(decoded.username);
-    navigate("/"); // Change if needed
+    setTimeout(() => navigate("/"), 1000);
   };
 
   const onSubmitFailure = (message) => {
@@ -57,11 +63,14 @@ const Login = () => {
       showSubmitError: true,
       errorMsg: message,
     });
+    toast.error(message);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
+
+    setButtonClicked(true); // Start animation
 
     const url = `${backendURL}/api/v1/login`;
     const payload = { email: formData.email, password: formData.password };
@@ -78,18 +87,18 @@ const Login = () => {
       if (res.ok) {
         onSubmitSuccess(data.token);
       } else {
-        console.log(data);
         onSubmitFailure(
-          data.error || "Login failed due to mutile attempts, Try again later."
+          data.message || data.error || "Login failed, try again later."
         );
       }
     } catch (err) {
-      console.log(err);
-      alert("Something went wrong!");
+      toast.error("Something went wrong!");
+    } finally {
+      setTimeout(() => setButtonClicked(false), 300); // Reset animation
     }
   };
 
-  if (checkingAuth) return null; // or a loading spinner
+  if (checkingAuth) return null;
 
   return (
     <div className="flex flex-col min-h-screen font-roboto bg-gray-50">
@@ -101,10 +110,13 @@ const Login = () => {
 
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm text-gray-700 mb-1">Email</label>
+              <label className="block text-sm text-gray-700 mb-1">
+                Email <span className="text-red-500">*</span>
+              </label>
               <input
                 name="email"
                 type="email"
+                required
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="akshay@gmail.com"
@@ -117,16 +129,26 @@ const Login = () => {
 
             <div>
               <label className="block text-sm text-gray-700 mb-1">
-                Password
+                Password <span className="text-red-500">*</span>
               </label>
-              <input
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-400"
-              />
+              <div className="relative">
+                <input
+                  name="password"
+                  required
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="••••••••"
+                  className="w-full border rounded-md px-4 py-2 pr-10 focus:ring-2 focus:ring-orange-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-2 flex items-center px-2 text-gray-500"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
               {errors.password && (
                 <p className="text-sm text-red-500 mt-1">{errors.password}</p>
               )}
@@ -134,7 +156,9 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200"
+              className={`w-full bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-4 rounded-md transition duration-200 transform ${
+                buttonClicked ? "translate-y-1" : "translate-y-0"
+              }`}
             >
               Login
             </button>

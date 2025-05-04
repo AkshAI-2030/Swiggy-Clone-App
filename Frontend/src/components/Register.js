@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+import { FaEye, FaEyeSlash } from "react-icons/fa"; // Eye icons
+import "react-toastify/dist/ReactToastify.css";
 
 const backendURL = process.env.REACT_APP_API_URL;
 
@@ -22,7 +25,11 @@ const Register = () => {
     password: "",
     confirmpassword: "",
   });
+
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -47,6 +54,8 @@ const Register = () => {
     e.preventDefault();
     if (!validate()) return;
 
+    setLoading(true);
+
     try {
       const res = await fetch(`${backendURL}/api/v1/register`, {
         method: "POST",
@@ -56,13 +65,15 @@ const Register = () => {
 
       const data = await res.json();
       if (res.ok) {
-        alert("Registration Success ✅");
-        navigate("/login");
+        toast.success("Registered successfully! Please login.");
+        setTimeout(() => navigate("/login"), 2000);
       } else {
-        alert(data.message || "Registration failed");
+        toast.error(data.message || "Registration failed");
       }
     } catch {
-      alert("Something went wrong!");
+      toast.error("Something went wrong!");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,7 +86,9 @@ const Register = () => {
           </h2>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-sm mb-1">Username</label>
+              <label className="block text-sm mb-1">
+                Username <span className="text-red-500">*</span>
+              </label>
               <input
                 name="username"
                 type="text"
@@ -88,7 +101,9 @@ const Register = () => {
               )}
             </div>
             <div>
-              <label className="block text-sm mb-1">Email</label>
+              <label className="block text-sm mb-1">
+                Email <span className="text-red-500">*</span>
+              </label>
               <input
                 name="email"
                 type="email"
@@ -101,36 +116,63 @@ const Register = () => {
               )}
             </div>
             <div>
-              <label className="block text-sm mb-1">Password</label>
-              <input
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-400"
-              />
+              <label className="block text-sm mb-1">
+                Password <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="w-full border rounded-md px-4 py-2 pr-10 focus:ring-2 focus:ring-orange-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-2 flex items-center text-gray-600"
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
               {errors.password && (
                 <p className="text-sm text-red-500">{errors.password}</p>
               )}
             </div>
             <div>
-              <label className="block text-sm mb-1">Confirm Password</label>
-              <input
-                name="confirmpassword"
-                type="password"
-                value={formData.confirmpassword}
-                onChange={handleChange}
-                className="w-full border rounded-md px-4 py-2 focus:ring-2 focus:ring-orange-400"
-              />
+              <label className="block text-sm mb-1">
+                Confirm Password <span className="text-red-500">*</span>
+              </label>
+              <div className="relative">
+                <input
+                  name="confirmpassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={formData.confirmpassword}
+                  onChange={handleChange}
+                  className="w-full border rounded-md px-4 py-2 pr-10 focus:ring-2 focus:ring-orange-400"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                  className="absolute inset-y-0 right-2 flex items-center text-gray-600"
+                >
+                  {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                </button>
+              </div>
               {errors.confirmpassword && (
                 <p className="text-sm text-red-500">{errors.confirmpassword}</p>
               )}
             </div>
             <button
               type="submit"
-              className="w-full bg-orange-500 text-white py-2 rounded-md hover:bg-orange-600"
+              disabled={loading}
+              className={`w-full py-2 rounded-md text-white font-semibold transition ${
+                loading
+                  ? "bg-orange-300 cursor-not-allowed"
+                  : "bg-orange-500 hover:bg-orange-600"
+              }`}
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
           <div className="mt-6 text-center">

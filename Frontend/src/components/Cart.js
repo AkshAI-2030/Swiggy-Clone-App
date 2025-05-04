@@ -3,6 +3,8 @@ import ItemList from "./ItemList";
 import { clearCart } from "../utils/cartSlice";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const backendURL = process.env.REACT_APP_API_URL;
 
@@ -12,12 +14,14 @@ const Cart = () => {
 
   const handleClearCart = () => {
     dispatch(clearCart());
+    toast.info("Cart cleared successfully!");
   };
 
   const handleSaveCart = async () => {
     const token = Cookies.get("token");
+
     if (!token || cartItems.length === 0) {
-      alert("Cart is empty or user not authenticated.");
+      toast.warning("Cart is empty or user not authenticated.");
       return;
     }
 
@@ -40,29 +44,29 @@ const Cart = () => {
 
       const data = await response.json();
       if (response.ok) {
-        alert("Cart saved to DB!");
+        toast.success("Cart saved successfully!");
       } else {
-        alert(data.error || "Failed to save cart.");
+        toast.error(data.error || "Failed to save cart.");
       }
     } catch (err) {
-      console.log("Error saving cart:", err);
-      alert("Something went wrong while saving.");
+      console.error("Error saving cart:", err);
+      toast.error("Something went wrong while saving.");
     }
   };
 
   return (
     <div className="min-h-screen text-center m-4 p-4">
-      <h1 className="text-2xl font-bold">Cart 🛒</h1>
+      <h1 className="text-2xl font-bold mb-4">Cart 🛒</h1>
 
-      <div className="flex justify-center gap-4 my-3">
+      <div className="flex justify-center gap-4 mb-4">
         <button
-          className="px-4 py-2 bg-red-600 text-white rounded-md"
+          className="px-4 py-2 bg-red-600 text-white rounded-md shadow hover:shadow-md transition font-semibold"
           onClick={handleClearCart}
         >
           Clear Cart
         </button>
         <button
-          className="px-4 py-2 bg-green-600 text-white rounded-md"
+          className="px-4 py-2 bg-green-600 text-white rounded-md shadow hover:shadow-md transition font-semibold"
           onClick={handleSaveCart}
         >
           Save Cart

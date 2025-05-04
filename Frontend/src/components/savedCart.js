@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 import SavedShimmer from "../ShimmerUI/SavedShimmer";
+import { toast } from "react-toastify"; // Import toast here
+import "react-toastify/dist/ReactToastify.css"; // Import toast styles
 
 const backendURL = process.env.REACT_APP_API_URL;
 
@@ -13,7 +15,7 @@ const SavedItems = () => {
     const token = Cookies.get("token");
 
     if (!token) {
-      alert("Please log in to view saved items.");
+      toast.warning("Please log in to view saved items.");
       return;
     }
 
@@ -32,10 +34,10 @@ const SavedItems = () => {
         if (res.ok && data.items) {
           setSavedItems(data.items);
         } else {
-          console.log(data.error || "Failed to fetch saved cart.");
+          toast.error(data.error || "Failed to fetch saved cart.");
         }
       } catch (err) {
-        console.log("Error fetching saved cart:", err);
+        toast.error("Error fetching saved cart.");
       } finally {
         setLoading(false);
       }
@@ -57,7 +59,7 @@ const SavedItems = () => {
           {savedItems?.map((item, index) => (
             <div
               key={index}
-              className="border border-gray-300 rounded-lg p-4 shadow hover:shadow-md transition"
+              className="border border-gray-300 rounded-lg p-4 shadow hover:shadow-xl transition transform hover:scale-105 duration-300"
             >
               <img
                 src={`https://media-assets.swiggy.com/swiggy/image/upload/fl_lossy,f_auto,q_auto,w_660/${item.image}`}

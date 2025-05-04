@@ -1,5 +1,6 @@
 import { useState } from "react";
 import emailjs from "emailjs-com";
+import toast, { Toaster } from "react-hot-toast";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -8,7 +9,7 @@ const ContactUs = () => {
     message: "",
   });
 
-  const [status, setStatus] = useState(""); // success or error
+  const [isSending, setIsSending] = useState(false); // for button animation
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,6 +18,7 @@ const ContactUs = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSending(true);
 
     emailjs
       .send(
@@ -27,17 +29,32 @@ const ContactUs = () => {
       )
       .then(
         () => {
-          setStatus("success");
+          toast.success("Message sent successfully!");
           setFormData({ name: "", email: "", message: "" });
         },
         () => {
-          setStatus("error");
+          toast.error("Failed to send message. Please try again.");
         }
-      );
+      )
+      .finally(() => {
+        setIsSending(false);
+      });
   };
 
   return (
     <div className="flex flex-col min-h-screen font-roboto bg-gray-50">
+      <Toaster
+        position="top-center"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: "#333",
+            color: "#fff",
+            fontSize: "16px",
+          },
+        }}
+      />
+
       <div className="flex-grow p-6 md:p-12">
         <div className="max-w-3xl mx-auto text-center">
           <h1 className="text-4xl font-bold text-orange-600 mb-4">
@@ -95,21 +112,16 @@ const ContactUs = () => {
 
             <button
               type="submit"
-              className="bg-orange-600 text-white font-medium px-6 py-2 rounded-lg hover:bg-orange-700 transition"
+              disabled={isSending}
+              className={`bg-orange-600 text-white font-medium px-6 py-2 rounded-lg transition ${
+                isSending
+                  ? "opacity-70 cursor-not-allowed animate-pulse"
+                  : "hover:bg-orange-700"
+              }`}
             >
-              Send Message
+              {isSending ? "Sending..." : "Send Message"}
             </button>
           </form>
-
-          {/* 📦 Box Below Form */}
-          {status === "success" && (
-            <div className="mt-8 bg-green-50 border-l-4 border-green-400 text-green-800 p-4 rounded">
-              <p>
-                <strong>Thank you!</strong> We've received your message and will
-                get back to you shortly.
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>

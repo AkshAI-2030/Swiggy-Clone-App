@@ -21,6 +21,7 @@
     "mongoose": "^8.14.0",
     "nodemon": "^3.1.10",
     "punycode": "^2.3.1",
+    "rate-limiter-flexible": "^7.1.0",
     "supertest": "^7.1.0"
   }
 }

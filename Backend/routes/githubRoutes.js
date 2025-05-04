@@ -1,12 +1,11 @@
+// routes/githubRoutes.js
 const express = require("express");
-const { githubLimiter } = require("../middlewares/rateLimiter");
+const router = express.Router();
+const { getUserProfile, getRepos } = require("../controllers/githubController");
 const { githubCache, CACHE_DURATION } = require("../middlewares/cache");
 
-const router = express.Router();
-const username = "AkshAI-2030";
-
-// GitHub Profile
-router.get("/profile", githubLimiter, async (req, res) => {
+// GET /api/v1/profile
+router.get("/profile", async (req, res) => {
   const now = Date.now();
 
   if (
@@ -17,18 +16,18 @@ router.get("/profile", githubLimiter, async (req, res) => {
   }
 
   try {
-    const response = await fetch(`https://api.github.com/users/${username}`);
-    const data = await response.json();
-    githubCache.profile = data;
+    const profileData = await getUserProfile();
+    githubCache.profile = profileData;
     githubCache.profileFetchedAt = now;
-    res.json(data);
+    res.json(profileData);
   } catch (err) {
-    res.status(500).json({ error: "GitHub profile fetch failed" });
+    console.error("Error fetching profile:", err.message);
+    res.status(500).json({ error: "Failed to fetch GitHub profile" });
   }
 });
 
-// GitHub Repos
-router.get("/repos", githubLimiter, async (req, res) => {
+// GET /api/v1/repos
+router.get("/repos", async (req, res) => {
   const now = Date.now();
 
   if (githubCache.repos && now - githubCache.reposFetchedAt < CACHE_DURATION) {
@@ -36,15 +35,13 @@ router.get("/repos", githubLimiter, async (req, res) => {
   }
 
   try {
-    const response = await fetch(
-      `https://api.github.com/users/${username}/repos?per_page=100`
-    );
-    const data = await response.json();
-    githubCache.repos = data;
+    const reposData = await getRepos();
+    githubCache.repos = reposData;
     githubCache.reposFetchedAt = now;
-    res.json(data);
+    res.json(reposData);
   } catch (err) {
-    res.status(500).json({ error: "GitHub repos fetch failed" });
+    console.error("Error fetching repos:", err.message);
+    res.status(500).json({ error: "Failed to fetch GitHub repositories" });
   }
 });
 

@@ -6,7 +6,7 @@ const useOnlineStatus = () => {
   useEffect(() => {
     const setInitialStatus = () => {
       if (navigator.onLine) {
-        document.title = "Online:✅";
+        document.title = "Online:🟢";
         setOnlineStatus(true);
       } else {
         document.title = "Offline:🔴";
@@ -15,7 +15,7 @@ const useOnlineStatus = () => {
     };
     setInitialStatus();
     const handleOnline = () => {
-      document.title = "Online:✅";
+      document.title = "Online:🟢";
       setOnlineStatus(true);
     };
     const handleOffline = () => {

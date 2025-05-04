@@ -20,7 +20,7 @@ const About = () => {
         const sortedRepos = reposData.slice(11, 17);
         setTopRepos(sortedRepos);
       } catch (error) {
-        console.error("Error fetching GitHub data", error);
+        console.log("Error fetching GitHub data", error);
       }
     };
 

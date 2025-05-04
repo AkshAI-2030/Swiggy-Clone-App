@@ -4,7 +4,7 @@ import Shimmer from "../ShimmerUI/Shimmer";
 import { Link } from "react-router";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import Offline from "./Offline";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { CgSortAz, CgSortZa } from "react-icons/cg";
 
@@ -44,12 +44,12 @@ const Body = () => {
     }
   };
 
-  const handleSearch = useCallback(() => {
+  useEffect(() => {
     const filtered = listOfRestaurants.filter((each) =>
       each?.info?.name?.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredRestaurants(filtered);
-  }, [listOfRestaurants, searchText]);
+  }, [searchText, listOfRestaurants]);
 
   const handleSort = (order) => {
     const sorted = [...filteredRestaurants].sort((a, b) => {
@@ -61,7 +61,7 @@ const Body = () => {
   };
 
   if (onlineStatus === false) return <Offline />;
-  if (listOfRestaurants.length === 0)
+  if (listOfRestaurants?.length === 0)
     return <Shimmer count={filteredRestaurants.length || 15} />;
 
   return (
@@ -73,17 +73,7 @@ const Body = () => {
           className="w-full md:w-64 h-10 px-3 py-1 border border-gray-300 rounded-md text-sm"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearch();
-          }}
         />
-
-        <button
-          className="flex items-center justify-center px-4 py-2 bg-orange-600 text-white rounded-lg text-md hover:bg-orange-700 transition-all duration-150"
-          onClick={handleSearch}
-        >
-          Search 🔎
-        </button>
 
         <button
           className="flex items-center justify-center gap-2 px-4 py-2 bg-green-600 text-white rounded-md text-sm hover:bg-green-700 transition-all duration-150"

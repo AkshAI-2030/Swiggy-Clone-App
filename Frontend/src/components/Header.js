@@ -178,15 +178,7 @@ const Header = () => {
             </Link>
           </li>
 
-          <li className="py-1 px-6">
-            <button
-              onClick={handleAuthClick}
-              className="bg-orange-400 px-4 py-2 rounded-lg text-white font-bold text-sm w-full"
-            >
-              {btnNameReact}
-            </button>
-          </li>
-
+          {/* Username at the top */}
           {username && (
             <li className="py-1 px-6">
               <div className="flex gap-3">
@@ -205,6 +197,16 @@ const Header = () => {
               </div>
             </li>
           )}
+
+          {/* Button moved to bottom */}
+          <li className="py-1 px-6 mt-4">
+            <button
+              onClick={handleAuthClick}
+              className="bg-orange-400 px-4 py-2 rounded-lg text-white font-bold text-sm w-full"
+            >
+              {btnNameReact}
+            </button>
+          </li>
         </ul>
       )}
     </nav>
