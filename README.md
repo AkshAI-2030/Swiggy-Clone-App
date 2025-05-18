@@ -3,6 +3,7 @@
 A full-stack food ordering web application inspired by Swiggy. This clone allows users to browse restaurants, view menus, add items to a cart, and save their cart. Built using the **MERN stack** (MongoDB, Express, React, Node.js) with Redux Toolkit for state management.
 
 ---
+## 🚀 Live Deployed URL: https://swiggy-clone-app-frontend.onrender.com/login
 
 ## 🚀 Features
 
